@@ -7,7 +7,7 @@ All links are relative, so the site works both on the custom domain and on
 the <user>.github.io/com-gcfn/ project URL.
 
 Page structure mirrors the original WordPress (WoodMart + Elementor) site:
-promo bar, dark header with logo, page-title banner with breadcrumbs,
+navy promo bar, header over a bright-blue page banner,
 "subtitle over title" section headings, counters band, "Take Action" footer
 and the mobile sticky toolbar (Donate / Become a Member / Get Financial Support).
 """
@@ -125,18 +125,14 @@ def logo(lang, cur, cls="logo"):
             f'<img src="{asset(cur, "emblem.png")}" alt="" width="137" height="123">'
             f'<span>Fondation<br>du cancer<br>de Gaspé</span></a>')
 
-def title(sub, main, center=False, sep=False):
-    c = " center" if center else ""
+def title(sub, main, center=False, sep=False, right=False):
+    c = " center" if center else (" right" if right else "")
     s = '<span class="sep"></span>' if sep else ""
     sub_html = f'<span class="sub">{sub}</span>' if sub else ""
     return f'<div class="title{c}">{sub_html}<h2>{main}</h2>{s}</div>'
 
 def page_title(lang, key, cur, h1):
-    L = LABELS[lang]
-    crumbs = (f'<nav class="crumbs" aria-label="{"Fil d’Ariane" if lang == "fr" else "Breadcrumb"}">'
-              f'<a href="{url(lang, "home", cur)}">{L["crumb_home"]}</a><span>»</span>{h1}</nav>')
-    return (f'<div class="page-title" style="background-image:url(\'{asset(cur, "care.jpg")}\')">'
-            f'<div class="wrap"><h1>{h1}</h1>{crumbs}</div></div>')
+    return f'<div class="page-title"><div class="wrap"><h1>{h1}</h1></div></div>'
 
 PROMO = {
     "fr": "Notre campagne annuelle de financement est en cours! Devenez membre ou faites un don dès aujourd’hui.",
@@ -168,8 +164,7 @@ def layout(lang, key, cur, title_txt, desc, body):
     en_url = CONFIG["site_url"] + "/" + PAGES[key][1].replace("index.html", "")
     nav = "".join(f'<a href="{url(lang, k, cur)}"{CUR if k == key else ""}>{e(L[k])}</a>' for k in NAV)
     lang_label = "English" if lang == "fr" else "Français"
-    promo = (f'<div class="promo">{PROMO[lang]} <a href="{url(lang, "donate", cur)}">'
-             f'{"Faire un don" if lang == "fr" else "Donate"}</a></div>') if CONFIG["promo"] else ""
+    promo = (f'<div class="promo"><a href="{url(lang, "donate", cur)}">🏠 {PROMO[lang]}</a></div>') if CONFIG["promo"] else ""
     t = TOOLBAR[lang]
     return f"""<!doctype html>
 <html lang="{'fr-CA' if lang == 'fr' else 'en-CA'}">
@@ -190,26 +185,28 @@ def layout(lang, key, cur, title_txt, desc, body):
 <link rel="apple-touch-icon" href="{asset(cur, 'apple-touch-icon.png')}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{asset(cur, 'site.css')}">
 </head>
 <body>
 <a class="skip" href="#main">{'Aller au contenu' if lang == 'fr' else 'Skip to content'}</a>
+<div class="masthead">
 {promo}
 <header class="site-header">
  <div class="wrap">
   {logo(lang, cur)}
   <button class="menu-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
   <nav class="nav" id="nav" aria-label="{'Navigation principale' if lang == 'fr' else 'Main navigation'}">
-   {nav}
    <a class="lang" href="{url(other, key, cur)}" lang="{other}" hreflang="{other}">{lang_label}</a>
+   {nav}
   </nav>
   <div class="hbtns">
-   <a class="btn sm" href="{url(lang, 'donate', cur)}">{e(L['donate'])}</a>
-   <a class="btn sm ghost" href="{url(lang, 'membership', cur)}">{e(L['membership'])}</a>
+   <a class="btn yellow" href="{url(lang, 'donate', cur)}">{e(L['donate'])}</a>
+   <a class="btn" href="{url(lang, 'membership', cur)}">{e(L['membership'])}</a>
   </div>
  </div>
 </header>
+</div>
 <main id="main">
 {body}
 </main>
@@ -261,6 +258,7 @@ STATS = [  # "donations received" removed: EN said 385,000, FR said 900,000.
     ("10 896", "10,896", "Heures de bénévolat", "Hours volunteered"),
     ("255", "255", "Membres aidés", "Members helped"),
     ("274 006 $", "$274,006", "Versés en aide", "Dollars given"),
+    ("2003", "2003", "Année de fondation", "Year founded"),
 ]
 
 CANNOT = {
@@ -290,6 +288,7 @@ def page_home(lang, cur):
             imp="Un impact réel.", imp_sub="Depuis notre fondation en 2003",
             imp_txt="<p>Nous offrons à nos membres des ressources, de l’inspiration et la force de lutter contre le cancer et d’en limiter l’emprise. Car si le cancer est puissant à bien des égards, il a aussi ses limites. Voici quelques-unes des choses qu’il ne peut pas faire :</p>",
             img_alt="Une femme portant un foulard regarde au loin, sereine.",
+            care_alt="Une infirmière prend soin d’une dame âgée.",
             his_sub="L’histoire de notre fondation", his="Notre histoire",
             his_txt=f"""<p>La {ORG_FR} est née du rêve de Noreen Hackett. Lors d’un symposium pour femmes, elle a découvert la Fondation Linda LeMore-Brown, créée pour répondre aux besoins financiers des personnes atteintes de cancer dans le district de Bonaventure. Elle a reconnu le même besoin dans la région de Gaspé.</p>
 <p>La Fondation a vu le jour en juillet 2003 et a obtenu à ce moment son statut d’organisme de bienfaisance. Elle est gérée à 100 % par des bénévoles et sert les résidents de Grande-Vallée à Coin-du-Banc, y compris Murdochville.</p>
@@ -308,6 +307,7 @@ def page_home(lang, cur):
             imp="Real Impact.", imp_sub="Since our founding in 2003",
             imp_txt="<p>We provide members with resources, inspiration and the strength to fight cancer and limit its power. Because while cancer is very powerful in many ways, it is also very limited. Here are a few of the things cancer cannot do:</p>",
             img_alt="A woman wearing a headscarf looks into the distance, calm.",
+            care_alt="A nurse caring for an older woman.",
             his_sub="The story of our founding", his="Our History",
             his_txt=f"""<p>The {ORG_EN} grew out of Noreen Hackett’s dream after she attended a women’s symposium where she learned of the Linda LeMore-Brown Foundation, formed to help meet the financial needs of cancer patients in the Bonaventure district. Noreen saw the same need in the Gaspé area.</p>
 <p>The Foundation was formed in July 2003 and registered as a charity at that time. It is a non-profit run entirely by volunteers, serving residents from Grande-Vallée to Coin-du-Banc (Corner-of-the-Beach), including Murdochville.</p>
@@ -316,27 +316,39 @@ def page_home(lang, cur):
             b_don="Make a Donation", b_mem="Become a Member", b_ass="Request Assistance",
         )
     return page_title(lang, "home", cur, T["h1"]) + f"""
-<section class="sec"><div class="wrap cols c2">
- <div>{title(T['mis_sub'], T['mis'], sep=True)}{T['mis_txt']}</div>
- <div>{title(T['vis_sub'], T['vis'], sep=True)}{T['vis_txt']}</div>
-</div></section>
-<section class="sec light tight"><div class="wrap">
- <figure class="testimonial"><blockquote>{T['quote']}</blockquote><figcaption><cite>Nancy Briand</cite></figcaption></figure>
-</div></section>
-<section class="counters" style="background-image:url('{asset(cur, 'cairn.jpg')}')"><div class="wrap">{counters}</div></section>
-<section class="sec"><div class="wrap cols c5-7">
- <div class="photo"><img src="{asset(cur, 'patient.webp')}" alt="{T['img_alt']}" width="465" height="698" loading="lazy"></div>
+<section class="sec"><div class="wrap about-top">
  <div>
-  <div class="title"><h2>{T['imp']}</h2><span class="sub" style="margin-top:6px;text-transform:uppercase;letter-spacing:.06em">{T['imp_sub']}</span><span class="sep"></span></div>
-  {T['imp_txt']}
-  <ul class="cannot">{cannot}</ul>
-  <div class="btns"><a class="btn" href="{d}">{T['b_don']}</a><a class="btn outline" href="{m}">{T['b_mem']}</a></div>
+  {title(T['mis_sub'], T['mis'])}
+  <ul class="lead-list">{T['mis_txt'].replace('<p>', '<li>').replace('</p>', '</li>')}</ul>
+  <hr class="rule">
+  {title(T['vis_sub'], T['vis'], right=True)}
+  <div style="text-align:right">{T['vis_txt']}</div>
+ </div>
+ <div class="mosaic">
+  <div class="stack">
+   <img class="a" src="{asset(cur, 'care.jpg')}" alt="{T['care_alt']}" width="1600" height="1058" loading="lazy">
+   <img class="b" src="{asset(cur, 'patient.webp')}" alt="{T['img_alt']}" width="465" height="698" loading="lazy">
+  </div>
+  <div class="stack" style="margin-top:0">
+   <figure class="quote-card" style="margin:0"><blockquote>{T['quote']}</blockquote><figcaption><cite>Nancy Briand</cite></figcaption></figure>
+   <img class="d" src="{asset(cur, 'cairn.jpg')}" alt="" width="1600" height="1067" loading="lazy">
+  </div>
  </div>
 </div></section>
-<section class="sec light"><div class="wrap" style="max-width:900px">
- {title(T['his_sub'], T['his'], center=True, sep=True)}
- {T['his_txt']}
- <div class="center"><div class="btns"><a class="btn" href="{m}">{T['b_mem']}</a><a class="btn outline" href="{d}">{T['b_don']}</a><a class="btn outline" href="{a}">{T['b_ass']}</a></div></div>
+<section class="impact"><div class="wrap">
+ <div class="cgrid">{counters}</div>
+ <div>
+  <h2>{T['imp']}</h2><span class="since">{T['imp_sub']}</span>
+  {T['imp_txt']}
+  <ul class="plain">{cannot}</ul>
+  <div class="btns"><a class="btn white" href="{d}">{T['b_don']}</a><a class="btn ghost" href="{m}">{T['b_mem']}</a></div>
+ </div>
+</div></section>
+<section class="sec"><div class="wrap history">
+ <span class="sub">{T['his_sub']}</span>
+ <h2>{T['his']}</h2>
+ <div class="two-col">{T['his_txt']}</div>
+ <div class="btns"><a class="btn" href="{m}">{T['b_mem']}</a><a class="btn yellow" href="{d}">{T['b_don']}</a><a class="btn outline" href="{a}">{T['b_ass']}</a></div>
 </div></section>"""
 
 # ---------------------------------------------------------------------------
@@ -674,9 +686,9 @@ def page_404():
     # GitHub Pages serves 404.html from any path, so use root-absolute links here.
     return f"""<!doctype html><html lang="fr-CA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page introuvable / Page not found</title><link rel="icon" href="/assets/favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css"></head>
-<body><header class="site-header"><div class="wrap"><a class="logo logo-text" href="/"><img src="/assets/emblem.png" alt="" width="137" height="123"><span>Fondation<br>du cancer<br>de Gaspé</span></a></div></header>
+<body><div class="masthead solid"><header class="site-header"><div class="wrap"><a class="logo logo-text" href="/"><img src="/assets/emblem.png" alt="" width="137" height="123"><span>Fondation<br>du cancer<br>de Gaspé</span></a></div></header></div>
 <main id="main"><section class="sec"><div class="wrap cols c2">
 <div><h1>Page introuvable</h1><p>La page demandée n’existe pas ou a été déplacée.</p><p><a class="btn" href="/">Retour à l’accueil</a></p></div>
 <div lang="en"><h1>Page not found</h1><p>The page you requested does not exist or has moved.</p><p><a class="btn outline" href="/en/about/">English home page</a></p></div>
