@@ -252,12 +252,12 @@ if(b)b.addEventListener('click',function(){{var o=n.classList.toggle('open');b.s
 # ---------------------------------------------------------------------------
 # About (home)
 # ---------------------------------------------------------------------------
-STATS = [  # "donations received" removed: EN said 385,000, FR said 900,000.
-    ("1 282", "1,282", "Membres", "Members"),
-    ("124", "124", "Bénévoles", "Volunteers"),
-    ("10 896", "10,896", "Heures de bénévolat", "Hours volunteered"),
-    ("255", "255", "Membres aidés", "Members helped"),
-    ("274 006 $", "$274,006", "Versés en aide", "Dollars given"),
+STATS = [  # Figures from the Foundation, 2026-10-14 (cumulative since 2003).
+    ("1 480", "1,480", "Membres", "Members"),
+    ("20 800", "20,800", "Heures de bénévolat", "Hours volunteered"),
+    ("4 504", "4,504", "Membres aidés", "Members helped"),
+    ("945 093 $", "$945,093", "Revenus totaux", "Total revenue"),
+    ("651 917 $", "$651,917", "Versés en aide aux déplacements", "Travel assistance paid"),
     ("2003", "2003", "Année de fondation", "Year founded"),
 ]
 
